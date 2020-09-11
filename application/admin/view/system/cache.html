@@ -1,0 +1,114 @@
+{include file="public/header" /}
+<form method="post" class="toAjaxForm">
+	<div class="onecolumn">
+		<div class='header'>
+			<h3>刷新缓存目录</h3>
+		</div>
+		<div class='content'>
+			<div class="edit-item">
+				<table width="60%">
+					<tr>
+						<td>1）runtime/</td>
+					</tr>
+					<tr>
+						<td align="center" colspan="6">
+							<input type="button" name="Submit" value="清空以上目录缓存" class="btn submit"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div class="onecolumn">
+		<div class='header'>
+			<h3>刷新memcache缓存</h3>
+		</div>
+		<div class='content'>
+			<div class="edit-item">
+				<form action="{:url('System/clear_memcache')}" class="toAjaxForm" method="POST">
+					<table width="60%">
+						<tr>
+							<td>1）memcache缓存</td>
+						</tr>
+						<tr>
+							<td align="center" colspan="6">
+								<input type="button" name="Submit" value="清空memcache缓存" class="btn submit"/>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div> -->
+	<!-- <div class="onecolumn">
+		<div class='header'>
+			<h3>刷新redis缓存</h3>
+		</div>
+		<div class='content'>
+			<div class="edit-item">
+				<form action="{:url('System/clear_redis')}" class="toAjaxForm" method="POST">
+					<table width="60%">
+						<tr>
+							<td>1）redis缓存</td>
+						</tr>
+						<tr>
+							<td align="center" colspan="6">
+								<input type="button" name="Submit" value="清空redis缓存" class="btn submit"/>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div> -->
+
+
+	<!-- <div class="onecolumn">
+		<div class='header'>
+			<h3>清除指定键名的redis缓存</h3>
+		</div>
+		<div class='content'>
+			<div class="edit-item">
+				<form action="{:url('System/clear_redis_for_key')}" class="toAjaxForm" method="POST">
+					<table width="60%">
+						<tr>
+							<td align="center" colspan="6">
+								<a target="_blank" href="{:url('System/redis_conf_index')}"><input type="button" value="点击前往redis管理页面"></a>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div> -->
+</form>
+<div id="redis_data_show" style="display: none;background: white;position:fixed;top:200px;right:400px;width: 50%;height: 450px;border: 1px solid black;overflow: auto">
+	<div onclick="$(this).parent().hide()" style="border: 1px solid;font-size:20px;width: 30px;height: 30px;float: right">X</div>
+	<div style="clear: both"></div>
+	<div id="redis_data_info" style="padding: 10px;font-size: 16px;"></div>
+</div>
+</body>
+
+<script>
+	$('#search_redis_data_for_key').on('click', function () {
+		$.post('get_redis_data_for_key', {redis_key_name : $("input[name='redis_key_name']").val()}, function(res){
+
+			var html = '<p>数据类型：'+res.code+'</p><br><p>值：</p><br>';
+			if (res.code == 'string') {
+				html += res.data;
+			} else if (res.code == 'list') {
+				var html = '<ul>';
+				$.each(res.data, function(index, v) {
+					html += '<li>'+v+'</li>'
+				});
+				html += '</ul>'
+			} else {
+				html += '无数据';
+			}
+			$("#redis_data_info").html(html);
+			$("#redis_data_show").show();
+		}, 'json')
+	});
+</script>
+</html>

@@ -1,0 +1,66 @@
+{include file="public/header" /}
+	<div class="onecolumn">
+		<div class="header">
+			<h3>{if !isset($data)}添加{else}修改{/if}角色组</h3>
+			<span class="ie7-hide"></span>
+		</div>
+		
+		<div class="content">
+			<form method="post" action="{:url(request()->controller().'/'.request()->action(), array('id'=>input('param.id')))}" class="toAjaxForm">
+				<div class="edit-item">
+					<label for="group_name" class="lefter">角色组名称：</label>
+					<div class="righter">{$data.group_name}</div>
+				</div>
+				<div class="edit-item">
+					<label for="username" class="lefter">可操作权限：</label>
+					<div class="righter">
+						<input type="checkbox" onclick="$.checkbox(this,'#auth-table')">全选/反选
+					</div>
+				</div>
+
+				{php}
+					$data['group_fields'] = isset($data['group_fields']) ? json_decode($data['group_fields'], true) : [];
+				{/php}
+				{if isset($resources)}
+				{foreach $resources as $key => $resource}
+					{if isset($resource['list'])}
+						<table id="auth-table" style="line-height: 25px;">
+							<tr><th colspan="2" class="list-title"><input type="checkbox" onclick="$.checkbox(this,'.item-{$key}')"> {$resource['title']}</th></tr>
+						{foreach $resource['list'] as $mod => $vo}
+							{php}
+								$idx=1;
+							{/php}
+							<tr class="item item-{$key}">
+								<td class="list-title" width="150"><input{if isset($vo['list'])} onclick="$.checkbox(this,'.{$mod}-item')"{/if} type="checkbox">{$vo['title']}</td>
+								<td class="list-title {$mod}-item">
+								{if isset($vo['list'])}
+								{foreach $vo['list'] as $item} 
+									{php}
+										$_key = strtolower((isset($item['identy']) || !isset($item['field']) ? $mod : $item['field']));
+									{/php}
+									<input type="checkbox" name="group_fields[]" value="{$_key}"{if isset($data['group_fields']) && in_array($_key,$data['group_fields'])} checked{/if}>{$item['title']}　
+									{if $key=='set' && $idx%4==0}
+										<br/>
+									{/if}
+									{php}
+										$idx++;
+									{/php}
+								{/foreach}
+								{/if}
+								</td>
+							</tr>
+						{/foreach}
+						</table>
+					{/if}
+				{/foreach}
+				{/if}
+				<div class="edit-item">
+					<div class="righter">
+						<span class="ui-btn ui-btn-green submit">提 交</span>
+						<a href="javascript:void(0)" class="ui-btn cancel-btn">取 消</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+{include file="public/footer" /}

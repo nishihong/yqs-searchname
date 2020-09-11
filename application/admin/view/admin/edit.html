@@ -1,0 +1,110 @@
+{include file="public/header" /}
+	<div class="onecolumn">
+		<div class="header">
+			<h3>{if !isset($data)}添加{else}修改{/if}管理员</h3>
+			<span class="ie7-hide"></span>
+		</div>
+
+		<div class="content">
+			<form method="post" id="cate" action="{:url(request()->controller().'/'.request()->action(), array('id'=>input('param.id')))}" class="toAjaxForm">
+                    <div class="edit-item">
+                        <label for="group_id" class="lefter">角色组：</label>
+                        <div class="righter must">
+                            <select name="group_id" id="group_id" class="require">
+                                <option value="">选择角色组</option>
+                                {if controller('Acl')->hasAcl('Group','add') || $admin['group_id'] == 1}
+                                	{if isset($roles)}
+	                                    {foreach $roles as $vo}
+	                                        <option value="{$vo['id']}" {if isset($data['group_id'])}{if $data['group_id']==$vo['id']} selected{/if}{/if}>{$vo['group_name']}</option>
+	                                    {/foreach}
+                                    {/if}
+                                {else}
+                                	{if isset($roles)}
+	                                    {foreach $roles as $vo}
+	                                        {if $data['group_id'] == $vo['id']}
+	                                            <option value="{$vo['id']}" {if isset($data['group_id'])}{if $data['group_id']==$vo['id']} selected{/if}{/if}>{$vo['group_name']}</option>
+	                                        {/if}
+	                                    {/foreach}
+                                    {/if}
+                                {/if}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="edit-item">
+                        <label for="admin_username" class="lefter">用户名：</label>
+                        {if $admin['group_id'] == 1 || (isset($fields) && in_array("username_edit",$fields))}
+                            <div class="righter must">
+                                <input type="text" class="long-txt require unique" name="admin_username" id="admin_username" value="{$data['admin_username']|default=''}">
+                                <span class="DESC"></span>
+                            </div>
+                        {else}
+                            <div class="righter">
+                                {$data['admin_username']}
+                                <input type="hidden" class="long-txt require unique" name="admin_username" id="admin_username" value="{$data['admin_username']|default=''}">
+                            </div>
+                        {/if}
+                    </div>
+
+                    <div class="edit-item">
+                        <label for="admin_sex" class="lefter">性 别：</label>
+                        <div class="righter">
+                            <input type="radio" name="admin_sex" value="1" {if isset($data['admin_sex'])}{if $data['admin_sex']==1}checked{/if}{else}checked{/if} />男
+                            <input type="radio" name="admin_sex" value="2" {if isset($data['admin_sex'])}{if $data['admin_sex']==2}checked{/if}{/if} />女
+                        </div>
+                    </div>
+
+                    <div class="edit-item">
+                        <label for="admin_nickname" class="lefter">昵 称：</label>
+                        <div class="righter"><input type="text" class="long-txt" name="admin_nickname" id="admin_nickname" value="{$data['admin_nickname']|default=''}"></div>
+                    </div>
+
+                    <div class="edit-item">
+                        <label for="admin_surename" class="lefter">姓 名：</label>
+                        <div class="righter"><input type="text" class="long-txt" name="admin_surename" id="admin_surename" value="{$data['admin_surename']|default=''}"></div>
+                    </div>
+
+                    {if !isset($data)}
+                        <div class="edit-item">
+                            <label for="admin_password" class="lefter">密 码：</label>
+                            <div class="righter{if !isset($data)} must{/if}"><input type="password" class="long-txt{if !isset($data)} require{/if} min_6 max_20 eq_admin_password" name="admin_password" id="admin_password"><span class="DESC">由6～20个字符组成</span></div>
+                        </div>
+
+                        <div class="edit-item">
+                            <label for="admin_confirm" class="lefter">确认密码：</label>
+                            <div class="righter{if !isset($data)}  must{/if}"><input type="password" class="long-txt{if !isset($data)} require{/if} min_6 max_20 eq_admin_confirm" name="admin_confirm" id="admin_confirm"><span class="DESC">请再一次输入密码</span></div>
+                        </div>
+                    {/if}
+
+                    <div class="edit-item">
+                        <label for="admin_image" class="lefter">头像：</label>
+                        <div class="righter">
+                            {:Upload('Upload/image', array('id'=>'admin_image', 'name'=>'admin_image','value'=>isset($data['admin_image']) ? $data['admin_image'] : '','path'=>'admin_image','multi'=>false))}
+                        </div>
+                    </div>
+
+                    <div class="edit-item">
+                        <label for="admin_qq" class="lefter">QQ：</label>
+                        <div class="righter must"><input type="text" class="long-txt require qq"  name="admin_qq" id="admin_qq" value="{$data['admin_qq']|default=''}"></div>
+                    </div>
+
+                    <div class="edit-item">
+                        <label for="admin_email" class="lefter">E-mail：</label>
+                        <div class="righter must"><input type="text" class="long-txt require email"  name="admin_email" id="admin_email" value="{$data['admin_email']|default=''}"></div>
+                    </div>
+
+                    <div class="edit-item">
+                        <label for="admin_mobile" class="lefter">手机号：</label>
+                        <div class="righter must"><input type="text" class="long-txt require mobile"  name="admin_mobile" id="admin_mobile" value="{$data['admin_mobile']|default=''}"></div>
+                    </div>
+
+				<div class="edit-item">
+					<div class="righter">
+						<span class="ui-btn ui-btn-green submit">提 交</span>
+						<a href="javascript:void(0)" class="ui-btn cancel-btn">取 消</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+{include file="public/footer" /}

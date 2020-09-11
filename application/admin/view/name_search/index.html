@@ -1,0 +1,63 @@
+{include file="public/header"}
+	<div class="onecolumn">
+		<div class="header">
+			{if controller('Acl')->addLink('批量添加','add_all',request()->controller(),request()->param())}<div class="float-left">
+           	{:controller('Acl')->addLink('批量添加','add_all',request()->controller(),request()->param())}
+            </div>{else}<h3>列表</h3>{/if}
+		</div>
+		
+		<div class="search-bar">
+			<form method="get" action="{:url(request()->controller() . '/' . request()->action())}">
+				<input type="text" name="name" class="inner-txt w200 prompt" title="输入名称" value="{$name|default=''}">
+				<input type="text" name="type" class="inner-txt w200 prompt" title="输入类型" value="{$type|default=''}">
+
+				<a class="search-btn submit" title="搜索"><span>搜索</span></a>
+			</form>
+		</div>
+		
+		<div class="content">
+			<form method="post" action="{:url(request()->controller().'/delete')}" id="betch-form">
+				<table>
+					<tr class="head">
+						{if controller('Acl')->hasAcl(request()->controller(),'delete')}
+							<th class="list-check"><input onclick="$.checkbox(this,'.item')" type="checkbox"></th>
+						{/if}
+						<th class="list-order">{:get_order("ID","id",$order_type,$order_field)}</th>
+						<th class="list-title">名称</th>
+						<th class="list-title">类型</th>
+						<th class="list-title">价格</th>
+						<th class="list-title">&nbsp;</th>
+					</tr>
+
+				{foreach $datas as $key=> $vo}
+					<tr class="item">
+						{if controller('Acl')->hasAcl(request()->controller(),'delete')}
+							<td><input type="checkbox" name="items[]" value="{$vo['id']}"></td>
+						{/if}
+						<td>{$vo['id']}</td>
+						<td class="list-title">{$vo['name']}</td>
+						<td class="list-title">{$vo['type']}</td>
+						<td class="list-title">{$vo['price']}</td>
+						<td class="list-title">
+							{:controller('Acl')->a('删除','delete',request()->controller(),array('id'=>$vo['id']),'class="act-btn delete-btn"')}
+						</td>
+					</tr>
+				{/foreach}
+				</table>
+			</form>
+		{if !empty($datas[0])}
+			<div class="action-bar">
+				{if controller('Acl')->hasAcl(request()->controller(),'delte')}
+						<a class="ui-btn ui-btn-green betch-delete-btn" name="#betch-form" rel="{:url(request()->controller().'/delete')}" title="删除选中">删除选中</a>
+					{/if}
+               	{include file="public/pager"}
+			</div>
+		{else}
+			<div class="empty-data"><span>{:config('logic.NOFOUND_RECORDS')}</span></div>
+
+		{/if}
+
+		</div>
+	</div>
+
+{include file="public/footer"}

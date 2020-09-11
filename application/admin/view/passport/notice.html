@@ -1,0 +1,103 @@
+{include file="public/pheader" /}
+<script type="text/javascript">
+$(function(){
+	  $('#getcode').click(function(){
+		    var type = $("input:checked").val();
+
+			// 59秒后，可以重新发送短信
+			var countdown_seconds = 59;
+						
+			function update_smstext(trigger){
+				
+				window.setTimeout(function(){
+					countdown_seconds--;
+					if(countdown_seconds <=0){
+						$("#getcode").show();
+						$(trigger).hide();
+						countdown_seconds = 59;
+					}else{
+						$(trigger).text(countdown_seconds+'秒后重新获取').show();
+						$("#getcode").hide();
+						update_smstext(trigger);
+					}
+				}, 1000);
+			}
+			
+		    update_smstext("#play");
+	  
+			 $.ajax({
+				   type: "POST",
+				   url: "{:url('Passport/code','id='.$id)}",
+				   data : "type="+type,
+				   success: function(data){
+					 if(data.code == 1){
+						 alert(data.msg);
+					 }else{
+						 alert(data.msg);
+					 }				     
+				   }
+			});
+	  });
+	  
+	  $(".submit").click(function(){
+			if($._submiting){
+				alert('网络不给力，数据还在处理中，请勿进行重复提交');
+				return false;
+			}
+			$.ajax({
+				url : $("form").attr("action"),
+				type : "POST",
+				dataType : "json",
+				data : $("form").serialize(),
+				beforeSend : function(){
+					$._submiting = true;
+				},
+				success : function(dat){
+					$._submiting = false;
+					if(dat.code == 1){
+						window.location.href=dat.url;
+					}else{
+						alert(dat.msg);
+					}
+				},
+				error : function(){
+					$._submiting = false;
+					alert('系统出错，数据提交失败');
+				}
+			});
+	  });
+	  
+	  $("input[type=radio]").click(function(){
+		  var r = this.value;
+		  if(r == 1){
+			  $("#mobile").show();
+			  $("#email").hide();
+		  }else{
+			  $("#mobile").hide();
+			  $("#email").show();			  
+		  }
+	  });
+});
+</script>
+</head>
+<body>
+	<div class="wrapper user-wrapper" style="top:35%;">
+		<div class="header" style="color:sandybrown;">您在异地登录，请完成认证</div>
+		<div class="content">
+			<form action="{:url('Passport/notice','id='.$id)}" method="post">
+				<div class="form-item" style="padding-top: 10px;">类　型：&nbsp;&nbsp;<input type="radio" name="type" value="1" checked />手机&nbsp;&nbsp;<input type="radio" name="type" value="2"/>邮箱</div>				
+				<div class="form-item" id="mobile" style="padding-top: 10px;">手机号：&nbsp;&nbsp;{if isset($mobile)}{:substr_replace($mobile,'****',3,4)}{/if}</div>
+				<div class="form-item" id="email" style="padding-top: 10px;display:none;">邮　箱：&nbsp;&nbsp;{if isset($email)}{:substr_replace($email,'****',2,3)}{/if}</div>
+				<div class="form-item" style="padding-top: 10px;">
+					验证码：&nbsp;&nbsp;<input id="verify" placeholder="输入验证码" name="verify" type="text" class="long-txt" style="width:200px;" />&nbsp;&nbsp;
+					<a title="发送" class="ui-btn ui-btn-green" style="padding: 3px 15px;" id="getcode">发送</a>
+					<a class="ui-btn ui-btn-green" style="padding: 3px 15px;display:none;" id="play"></a>
+				</div>
+				<div style="padding-top:10px;">
+					<span class="ui-btn ui-btn-green submit">提 交</span>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

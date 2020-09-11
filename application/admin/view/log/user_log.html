@@ -1,0 +1,80 @@
+{include file="public/header" /}
+	<div class="onecolumn">
+		<div class="header">
+			<h3>{if request()->action()=='index'}系统日志{else}操作日志{/if}</h3>
+		</div>
+		<div class="search-bar">
+			<form id="search_form" method="GET">
+				<!-- <select name="table_name">
+					<option value="c_user_log" {if input('get.table_name')=="c_user_log"}selected{/if}>日志时间(新数据)</option>
+					<option value="c_user_log_2018" {if input('get.table_name')=="c_user_log_2018"}selected{/if}>2018以前</option>
+					<option value="c_user_log_201907" {if input('get.table_name')=="c_user_log_201907"}selected{/if}>201907以前</option>
+				</select>		 -->
+				<select name="system_id">
+					<option value="">所属系统</option>
+					{foreach $system_id_list as $k=>$v}
+						<option value="{$k}"{if input('get.system_id')==$k} selected{/if}>{$v}</option>
+					{/foreach}
+				</select>		
+				<span class="inner-txt">
+					<span>操作时间</span>
+					<input type="text" name="time" value="{:input('get.time')}" class="prompt w80" onfocus="WdatePicker()" title="操作时间">
+				</span>			
+				<span class="inner-txt">
+					<input class="prompt w150" type="text" title="请输入操作员姓名" value="{:input('get.keyword')}" name="keyword" placeholder="请输入操作员姓名">
+				</span>
+				<span class="inner-txt">
+					<input class="prompt w150" type="text" title="请输入IP地址" value="{:input('get.ip')}" name="ip" placeholder="请输入IP地址">
+				</span>
+				<span class="inner-txt">
+					<input class="prompt w200" type="text" title="请输入操作描述" value="{:input('get.content')}" name="content" placeholder="请输入操作描述">
+				</span>
+				<a class="search-btn submit" title="搜索"><span>搜索</span></a>
+			</form>
+		</div>
+				
+		<div class="content">
+			<form method="post" action="{:url(request()->controller().'/'.request()->action())}" id="betch-form">
+				<table>
+					<tr class="head">
+						{if controller('Acl')->hasAcl(request()->controller(),'user_log_delete')}
+							<th class="list-check"><input onclick="$.checkbox(this,'.item')" type="checkbox"></th>
+						{/if}
+						<th class="list-order">操作人</th>
+						<th class="list-order">所属系统</th>
+						<th class="list-title">操作描述</th>
+						<th style="width:250px;">操作地址</th>
+						<th class="list-time">IP地址</th>
+						<th class="list-time">操作时间</th>
+					</tr>
+					{if isset($datas)}
+					{foreach $datas as $vo}
+						<tr class="item">
+							{if controller('Acl')->hasAcl(request()->controller(),'user_log_delete')}
+								<td><input type="checkbox" name="items[]" value="{$vo['id']}"></td>
+							{/if}
+							<td>{$vo['log_action_user']}</td>
+							<td>{$system_id_list[$vo['log_type']]|default='-'}</td>
+							<!-- <td class="list-title">{:str_replace(input('get.content'),"<font color='red'>".input('get.content')."</font>",$vo['log_content'])}</td>	 -->
+							<td class="list-title">{:str_replace('script','',str_replace(input('get.content'),"<font color='red'>".input('get.content')."</font>",$vo['log_content']))}</td>
+							<td>{$vo['log_action_url']}</td>
+							<td>{$vo['log_action_ip']}</td>
+							<td>{$vo['log_action_time']}</td>
+						</tr>
+					{/foreach}
+					{/if}
+				</table>
+			</form>
+			{if isset($datas)}		
+				<div class="action-bar">
+					{if $admin['id'] == 319 && controller('Acl')->hasAcl(request()->controller(),'user_log_delete')}
+						<a class="ui-btn ui-btn-green betch-delete-btn" name="#betch-form" rel="{:url(request()->controller().'/user_log_delete')}" title="删除选中">删除选中</a>
+					{/if}
+					{include file="public/pager" /}
+				</div>
+			{else}
+				<div class="empty-data"><span>{:config('logic.NOFOUND_RECORDS')}</span></div>
+			{/if}
+		</div>
+	</div>	
+{include file="public/footer" /}

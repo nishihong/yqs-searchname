@@ -1,0 +1,24 @@
+<!-- 获取并显示左边栏导航 -->
+	{if $childMenu}
+	<div id="shortcut">
+		{foreach $childMenu as $mod=>$vo}
+			<h4{if !empty($vo['current'])} class="current h4-focus"{/if}>{$vo['title']}</h4>
+		
+			<ul class="{if empty($vo['current'])}hide{else}shortcut-list{/if}">
+			{foreach $vo['list'] as $st}
+				{php}
+					$mod = isset($st['m']) ? $st['m'] : $mod;
+					$mn = request()->controller();
+				{/php}
+				{if left_menu_hidden($mod)}
+					<li{if !empty($st['current'])} class="li-focus"{elseif ($mn == 'AliyunCdn' or $mn == 'TencentCdn') && $mod == 'HuaweiCdn' && $st['a'] == 'index'} class="li-focus"{else}{/if}>
+					<a {if isset($st['is_target']) && $st['is_target']}target="_blank"{/if} class="menu-{$mod}-{$st['a']}" href="{$st.url}" title="{$st['title']}">{$st['title']}</a>
+					</li>
+				{/if}
+			{/foreach}
+			</ul>
+		{/foreach}
+	</div>
+	{else}
+	<style>#content_wrapper{padding-left:25px;}</style>
+	{/if}

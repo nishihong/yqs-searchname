@@ -1,0 +1,32 @@
+{include file="public/header"}
+	<div class="onecolumn">
+		<div class="header">
+			<h3>添加</h3>
+			<ul class="tagbar ui-tag">
+				<li class="ui-tag-cur" lang="#base-items">基础信息<span></span></li>
+			</ul>
+		</div>
+		
+		<div class="content">
+			<form class="toAjaxForm" method="post" action="{:url(request()->controller().'/'.request()->action(), request()->param())}">
+				<div id="base-items" class="form-items show-items">
+					<div class="edit-item">
+						<label for="content" class="lefter">内容：</label>
+						<div class="righter must">
+							<textarea name="content" id="content" class="long-txt" style="height: 400px;"></textarea>
+						<span class="DESC">每行的格式 名称|类型|价格，多个换行隔开</span>
+						</div>
+					</div>
+					
+				</div>
+				
+				<div class="edit-item">
+					<div class="righter">
+						<span  class="ui-btn ui-btn-green submit ">保存</span>
+						<a href="{:url(request()->controller().'/index')}" class="ui-btn">取 消</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+{include file="public/footer"}

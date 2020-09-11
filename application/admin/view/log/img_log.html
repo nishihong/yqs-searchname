@@ -1,0 +1,73 @@
+<!-- 显示图片 隐藏发送请求时请求头表示来源的referrer字段。 -->
+<meta name="referrer" content="no-referrer" /><!--页面头部添加-->
+
+{include file="public/header" /}
+	<div class="onecolumn">
+		<div class="header">
+			<h3>图片日志</h3>
+		</div>
+		<div class="search-bar">
+			<form id="search_form" method="GET">	
+				<span class="inner-txt" style="margin-left: 20px;">
+					<input type="text" class="long-txt " style="width: 100px" name="start_time" id="start_time" placeholder="开始时间" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="{$start_time}">
+				</span>
+	        	<span class="inner-txt" style="margin-right: 20px">
+					<input type="text" class="long-txt " style="width: 100px" name="end_time" id="end_time" placeholder="结束时间" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="{$end_time}">
+				</span>		
+				<span class="inner-txt">
+					<input class="prompt w150" type="text" title="图片地址" value="{:input('get.img_url')}" name="img_url" placeholder="图片地址">
+				</span>
+				<a class="search-btn submit" title="搜索"><span>搜索</span></a>
+			</form>
+		</div>
+				
+		<div class="content">
+			<form method="post" action="{:url(request()->controller().'/'.request()->action())}" id="betch-form">
+				<table>
+					<tr class="head">
+						{if controller('Acl')->hasAcl(request()->controller(),'login_delete')}
+							<th class="list-check"><input onclick="$.checkbox(this,'.item')" type="checkbox"></th>
+						{/if}
+						<th class="list-title">id</th>
+						<th class="list-title">图片地址</th>
+						<th class="list-title">{:get_order("添加时间","a.time",$order_type,$order_field)}</th>
+					</tr>
+					{if isset($datas)}
+					{foreach $datas as $vo}
+						<tr class="item">
+							{if controller('Acl')->hasAcl(request()->controller(),'login_delete')}
+								<td><input type="checkbox" name="items[]" value="{$vo['id']}"></td>
+							{/if}
+							<td>{$vo['id']}</td>
+							<td>
+								{if isset($vo['img_url'])}
+									{$vo['img_url']}
+									<a href="{$vo['img_url']}" class="lightbox" title="{$vo['img_url']}">
+										<img src="{$vo['img_url']}" height="100">
+									</a>
+								{/if} 
+
+								<a class="act-btn" href="{:url('SpiderImg/index','url='.get_between_string($vo['img_url'], 'mw690/', '.jpg'))}" target="_blank">
+									查看
+								</a>
+							</td>
+							<td>{:date('Y-m-d H:i:s',$vo['time'])}</td>
+						</tr>
+					{/foreach}
+					{/if}
+				</table>
+			</form>
+
+			{if isset($datas)}
+				<div class="action-bar">
+					{if controller('Acl')->hasAcl(request()->controller(),'img_log_delete')}
+						<a class="ui-btn ui-btn-green betch-delete-btn" name="#betch-form" rel="{:url(request()->controller().'/img_log_delete')}" title="删除选中">删除选中</a>
+					{/if}
+					{include file="public/pager" /}
+				</div>
+			{else}
+				<div class="empty-data"><span>{:config('logic.NOFOUND_RECORDS')}</span></div>
+			{/if}
+		</div>
+	</div>	
+{include file="public/footer" /}

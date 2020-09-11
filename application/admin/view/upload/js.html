@@ -1,0 +1,57 @@
+    <script type="text/javascript">
+        uploadify_location_href = "{:url('Upload/delete')}";
+        destory_uploadfy_obj = "#{$controller_id}";
+        $(function(){
+            $("#{$controller_id}").uploadify({
+                swf : "/static/js/Jquery/upload/uploadify.swf",
+                buttonText : '',
+                height : '100',
+                width: '100',
+                fileTypeDesc : '选择{if $params['action_name']=='image'}图片{else}文件{/if}',
+                fileTypeExts : '{$exts}',
+                cancelImg : "/static/js/Jquery/upload/cancel.png",
+                uploader : "{:url('Upload/index','cprs=1&action_name=index&path='.$params['path'].'&ext='.$ext)}",
+                formData : {'{php}echo session_name();{/php}':'{php}echo session_id();{/php}'},
+                queueID : "{$controller_id}-box",
+                multi : {if $params['multi']}true{else}false{/if},
+                auto: true,
+                removeCompleted : false,
+                removeTimeout : 1,
+                onSelect : function(f){
+                $("#"+f.id).prepend("<span class='fileType'>"+f.type.replace(".","")+"</span>");
+                {if !$params['multi']}$("#{$controller_id}-btn").css("position","absolute");{/if}
+                },
+                onUploadSuccess : function(file, data, response){
+                    //console.log(data);
+                    data = $.parseJSON(data);
+                    if(response && data.status == $.CODE_SUCCESS){
+                        var $obj_id = $("#"+file.id);
+                        var _fhtml = data.info.image == 1 ? "":"<span class='fileType'>"+$obj_id.find(".fileType").text()+"</span><span class='fileName'>"+$obj_id.find(".fileName").text()+"</span>";
+                        $obj_id.find(".fileType,.fileName,.fileSize").remove();
+                        if (data.info.image == 1){
+                            var pos = data.info.pos;
+                            if(pos === false){
+                                $obj_id.append("<a class='hide-path clone' rel='"+data.info.path+"' style='display:block;width:100%;height:100%;background:url("+data.info.path+") no-repeat center;'></a>");
+                            }else{
+                                $obj_id.append("<img src='"+data.info.path+"'"+(pos!=0 ? " width='"+pos.width+"' height='"+pos.height+"' style='left:"+pos.left+"px;top:"+pos.top+"px;' ":'')+"border='0' class='hide-path' />");
+                            }
+                        }else{
+                            $obj_id.append("<a rel='"+data.info.path+"' target='_blank' class='hide-path'>"+_fhtml+"</a>")
+                        }
+                        $obj_id.find(".cancel a").attr("href","javascript:uploadify_delete('{$controller_id}','"+file.id+"');");
+                        $obj_id.addClass("upload-completed");
+                        $obj_id.find(".data,.uploadify-progress").remove();
+                        $obj_id.append("<span class='uploadify-checked uploadify-true'><input type='hidden' value='"+data.info.id+"'></span>");
+                        uploadify_checked(file.id,{if $params['multi']}true{else}false{/if},"{$controller_id}");
+                    }else {
+                        $.msgbox(data.info,data.status,function(){
+                            document.location.href = data.url;
+                        });
+                    }
+                    }{if !$params['multi']},
+                    onCancel : function(file){
+                        $("#{$controller_id}-btn").css("position","");
+                    }{/if}
+                    });
+        });
+    </script>

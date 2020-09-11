@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+		<meta charset="utf-8">
+		<title>后台管理系统-{$_title|default='首页'}</title>
+		<link type="image/x-icon" href="/favicon.ico" rel="icon" />
+		{load href="/static/admin/css/common.css,/static/admin/css/admin.css"}
+		<link rel="stylesheet" type="text/css" href="/static/admin/skin/{if isset($admin['admin_style'])}{$admin['admin_style']}{else}blue.css{/if}" id="skin-style-file" />
+
+		{load href="/static/js/lib.js"}
+		{load href="/static/js/fn.extend.js"}
+		{load href="/static/js/form.extend.js"}
+		{load href="/static/js/window.extend.js"}
+		{load href="/static/js/init.js"}
+		{load href="/static/js/mywin.js"}
+		{load href="/static/js/loading.extend.js"}
+		{load href="/static/js/Jquery/lightbox/jquery.lightbox-0.5.min.js"}
+
+		{load href="/static/js/Jquery/lightbox/images/jquery.lightbox-0.5.css"}
+
+		{load href="/static/js/date/WdatePicker.js"}
+		{load href="/static/js/thickbox.js"}
+
+        <!--图表 -->
+        {load href="/static/js/Highcharts/js/highcharts.js"}
+        {load href="/static/js/Highcharts/js/modules/exporting.js"}
+        <!--图表end -->
+
+        <!-- 时间选择本月，上月等 -->
+        {load href="/static/js/choose_time.js"}
+
+		<script type="text/javascript">
+		var g_domainUrl = "http://{$_SERVER['HTTP_HOST']}/";
+		var g_searchNotice = {:json_encode(config('search_notice'))};
+		$(function(){
+			//显示隐藏二级导航
+			$("#header .nv li").hover(function(){
+				if($(this).find(".subnv-layer").length>0){
+					$(this).addClass("ui-nv-hover");
+					$(this).find(".subnv-layer").show();
+				}
+			}, function(){
+				$(this).removeClass("ui-nv-hover");
+				$(this).find(".subnv-layer").hide();
+			});
+
+			$(".window-box").click(function(){
+				$(this).show_window();
+				return false;
+			});
+		});
+
+		function select_bg(s){
+			if(s){
+				$.ajax({
+					   type: "POST",
+					   url: "{:url('Admin/style','id='.$admin['id'])}",
+					   data: "style="+s,
+					   success: function(msg){
+						   $('#skin-style-file').attr('href','/static/admin/skin/'+s);
+					   }
+					});
+			}
+
+		}
+
+		$(document).keydown(function(e){
+			e = e || window.event;
+			if(e.keyCode == 13) {
+				var c = $("#MYWIN_OVERLAY").attr('class');
+				var d = $("#window-container").children('span').attr('class');
+
+				//console.info(c);
+				if(c == undefined && d != "close"){
+					$(".search-btn").parent().submit();
+				}
+
+			}
+		});
+		</script>
+	</head>
+<body>
+<div id="outside-wrap">
+	{include file="public/shortcut" /}<!-- 左边导航栏 -->
+
+    <div class="taskTips">
+        <a title="下载管理中心" href="{:url('Downloads/index')}" class="downIcon mywin">
+            <span>下载中心</span>
+        </a>
+        <a class="taskProgress mywin" href="{:url('Downloads/index')}">
+            任务文件已加入点击查看下载进度
+        </a>
+    </div>
+
+
+	<div id="header">
+		<ul class="nv" style='padding-left: 0px'>
+			<li style='width: 145px;'><a href="http://www.onlyni.com/" target="_blank" style='width: 145px; height: 50px; display: inline-table;' title="快快网络">　</a></li>
+            {php}
+            if(app\admin\controller\Acl::hasAcl('Index','index')){
+            {/php}
+                <li{if !$childMenu} class="current"{/if}><a href="{:url('Index/index')}">首页</a></li>
+            {php}
+            }
+            {/php}
+
+            {if isset($navlist)}
+			{foreach $navlist as $key=>$vo}
+			<li {if !empty($vo['current'])}class='current'{/if}>
+			<a href="{$vo.url}" class="select-pos nv-item">{$vo.title}</a>
+			{if count($vo['list'])>1}
+			<div class="subnv-layer">
+				{foreach $vo['list'] as $mod => $nv}
+				<a href="{$nv.url}" {if isset($nv['is_target']) && $nv['is_target']}target="_blank"{/if}>{$nv['title']}</a>
+				{/foreach}
+			</div>
+			{/if}
+			</li>
+			{/foreach}
+			{/if}
+		</ul>
+
+		<ul class="user">
+			<li>{$admin['admin_username']}，欢迎您！</li>
+			<li><a class="ico-clear" title="缓存" href="{:url('System/cache')}">缓存</a></li>
+			<li style="position:relative;">
+				<a class="ico-skin" title="皮肤" href="javascript:;" onclick="$('.skin-list').slideToggle();">皮肤</a>
+				<ul class="skin-list">
+					{foreach $skin as $vo}
+						<li style="background:{$vo['color']}" title="{$vo['title']}" onclick="select_bg('{$vo["name"]}');"></li>
+					{/foreach}
+				</ul>
+			</li>
+			<li><a class="ico-logout" title="退出" href="{:url('Passport/logout')}">退出</a></li>
+		</ul>
+	</div>
+
+<div id="wrapper">
+	<div class="wrapper">
+		<div id="content_wrapper">

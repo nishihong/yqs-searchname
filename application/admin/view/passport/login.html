@@ -1,0 +1,113 @@
+{include file="public/pheader" /}
+<script type="text/javascript">
+$(function(){
+	var html = "<label class=\"lb\" for=\"verify\">验证码（不区分大小写）：</label><div class=\"form-item\"><input id=\"verify\" onblur=\"$.trim(this.value)!='' && $('.c_verify').remove()\" onchange=\"$('.c_all').remove()\" placeholder=\"输入验证码\" name=\"verify\" type=\"text\" class=\"long-txt\" style=\"width:150px;\" />&nbsp;&nbsp;<img src=\"{:url('Passport/verify')}\" style=\"vertical-align:middle;cursor:pointer;\" title=\"点击更换验证码\" onclick=\"javascript:void(this.src='{:url('Passport/verify')}?num='+Math.random());\" /></div>";
+	var _rmu = $.getcookie('remember_user');//记住用户名
+	$("#username").val(_rmu ? _rmu : '');
+	$(".wrapper").css("margin-top", "-" + $(".wrapper").outerHeight()/2 + "px");
+	$("form").submit(function(){
+		$.setcookie('remember_user', false, 0);
+		var username = $.trim($("#username").val());
+		var password = $.trim($("#password").val());
+		var verify = $.trim($("#verify").val());
+		var ajax_url;
+		if(username == ''){
+			showmsg('用户名不能为空','c_username');
+			return false;
+		}
+		if(password == ''){
+			showmsg('密码不能为空','c_password');
+			return false;
+		}
+		if( $.trim($("#show-verify").html()) ){
+			if(verify == ''){
+				showmsg('验证码不能为空','c_verify');
+				return false;
+			}else{
+				ajax_url = "username="+username+"&password="+ password+"&verify="+verify;
+			}
+		}else{
+			ajax_url = "username="+username+"&password="+ password;
+		}
+		$(".content .error").remove();
+		if(parseInt($("#remember").val())>0) $.setcookie('remember_user', username, 30);
+		$.ajax({
+			url : $(this).attr("action"),
+			data : ajax_url,
+			type : "POST",
+			dataType : 'json',
+			success : function(json){		
+				if(json.code == 1){
+					if(json.url.status == 1){
+						window.location.href = json.url.url;
+					}else{
+						window.location.href = json.url;
+					}
+				}else{
+					showmsg(json.msg,'c_all');
+					//显示验证码
+					$('#show-verify').html(html);
+					$(".wrapper").css("margin-top", "-" + ($(".wrapper").outerHeight()/2 + 20) + "px");
+				}
+			},
+			error : function(){
+				showmsg('系统出错，登录验证失败','c_all');
+			}
+		});
+		return false;
+	});
+	
+	$(document).keydown(function(e){
+		e = e || window.event;
+		if(e.keyCode == 13) {
+			$('form').submit();
+		}   
+	});
+});
+
+//消息显示
+function showmsg(msg,cls){
+	if($(".content .error").length > 0){
+		$(".content .error").html(msg);
+	}else{
+		$(".content").prepend("<div style='display:none;' class='error "+cls+"'>"+msg+"</div>");
+		$(".content .error").fadeIn();
+	}
+	
+}
+</script>
+</head>
+<body>
+	<div class="wrapper user-wrapper">
+		<div class="header">用户登录</div>
+		<div class="content">
+			<form action="{:url('Passport/login')}" method="post">
+				<label class="lb" for="username">用户名(或手机号码)：</label>
+				<div class="form-item">
+					<input value="" onblur="$.trim(this.value)!='' && $('.c_username').remove()" onchange="$('.c_all').remove()" name="username" placeholder="输入用户名或手机" id="username" type="text" class="long-txt" />
+				</div>
+				<label class="lb" for="password">密 码：</label>
+				<div class="form-item">
+					<input id="password" onblur="$.trim(this.value)!='' && $('.c_password').remove()" onchange="$('.c_all').remove()" placeholder="输入登录密码" name="password" type="password" class="long-txt" />
+				</div>
+				<div id="show-verify">
+					{if session('login_error') == 1}
+					<label class="lb" for="verify">验证码（不区分大小写）：</label>
+					<div class="form-item">
+						<input id="verify" onblur="$.trim(this.value)!='' && $('.c_verify').remove()" onchange="$('.c_all').remove()" placeholder="输入验证码" name="verify" type="text" class="long-txt" style="width:150px;" />&nbsp;&nbsp;
+						<img src="{:url('Passport/verify')}" style="vertical-align:middle;cursor:pointer;" title="点击更换验证码" onclick="javascript:void(this.src='{:url('Passport/verify')}?num='+Math.random());" />
+					</div>
+					{/if}
+				</div>
+				<div style="padding-top:10px;">
+					<span class="ui-btn ui-btn-green" onclick="$('form').submit()">登 录</span>
+					<span style="position:relative;top:12px;left:10px;">
+						<input type="checkbox" name="remember" id="remember" value="1" checked="checked" />
+						<label for="remember">记住用户</label>
+					</span>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

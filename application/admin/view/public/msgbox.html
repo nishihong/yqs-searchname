@@ -1,0 +1,69 @@
+{include file="public/pheader" /}
+	</head>
+	<body>
+		<div class="wrapper user-wrapper">
+			<div class="header" style="padding-left:10px;">
+				<i style="font-size:24px;overflow:hidden;float:left;margin-right:7px;" class="iconfont">
+					{if $code==1}&#x24;{elseif $code==0}&#x22;{elseif $code==2}&#x23;{else}&#x21;{/if}
+				</i>信息提示
+			</div>
+			<div class="content">
+				<p style="font-size:1.5em;" class="form-item color-{$code}"><b>{$msg}</b></p>
+				<div style="padding-top:10px;border-top:1px solid #CCCCCC;">系统 <b id="wait">{$wait}</b> 秒后将自动跳转， 不想等待请<a href="javascript:;;" onclick="waitSecond = 1; jumpTimeout();">点击这里</a></div>
+			</div>
+		</div>
+		<script>
+			$(function() {
+				$(".wrapper").css("margin-top", "-" + ($(".wrapper").outerHeight() / 2) + "px");
+			});
+			var g_domainUrl = "http://{$_SERVER['HTTP_HOST']}/";
+			var waitSecond = {$wait|default='3'};
+//			var waitSecond  = 1000;
+			var jsStr = '';
+			var jsEndStr = '';
+			var topUrl = false;
+			var jumpUrl = "{$url}";
+			var intervalId = 0;
+
+			//解析URL。分享出JS和URL
+			if (jumpUrl.indexOf("<js>") != -1) {
+				jsStr = jumpUrl.substring(jumpUrl.indexOf("<js>") + 4, jumpUrl.indexOf("</js>"));
+				jumpUrl = jumpUrl.replace("<js>" + jsStr + "</js>", '');
+				eval(jsStr);
+			}
+			if (jumpUrl.indexOf("<jsend>") != -1) {
+				jsEndStr = jumpUrl.substring(jumpUrl.indexOf("<jsend>") + 7, jumpUrl.indexOf("</jsend>"));
+				jumpUrl = jumpUrl.replace("<jsend>" + jsEndStr + "</jsend>", '');
+			}
+			if (jumpUrl.indexOf("<topurl>") != -1) {
+				topUrl = true;
+				jumpUrl = jumpUrl.replace("<topurl>", '');
+			}
+
+			/**
+			 * 跳转动作
+			 */
+			function jumpTimeout() {
+				waitSecond--;
+				$('#wait').html(waitSecond);
+				if (waitSecond <= 0) {
+					clearInterval(intervalId);
+					if (jsEndStr != '') {
+						eval(jsEndStr);
+					}
+					if (jumpUrl != '') {
+						if (topUrl) {
+							window.top.location.href = jumpUrl;
+						} else {
+							window.location.href = jumpUrl;
+						}
+					}else{
+						window.history.back(-1);
+					}
+				}
+			}
+			jumpTimeout();
+			intervalId = setInterval(jumpTimeout, 1000);
+		</script>
+	</body>
+</html>

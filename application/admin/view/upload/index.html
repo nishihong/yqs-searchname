@@ -1,0 +1,60 @@
+{if isset($show_control)}
+	<script type="text/javascript" src="/static/js/Jquery/upload/jquery.uploadify.min.js"></script>
+	<script type="text/javascript" src="/static/js/Jquery/upload/process.js"></script>
+
+	{include file="upload/js" /}
+	<div class="uploadify-toolbar">
+		<span onclick="uploadify_select_file('{$params['id']}','{$controller_id}')" class="uploadify-mini-btn uploadify-mini-btn-green" id="save_tag">确 定</span>
+		<span class="uploadify-mini-btn" onclick="$('#MYWIN_BOX .mywin-title .close').trigger('click')">取 消</span>
+		<a href="{:url('Upload/run',extend($params, array('action_name'=>'history')))}" class="uploadify-clock mywin"><b>历史上传</b></a>
+
+	</div>
+	<div style="width:750px;height:290px;overflow: auto;padding-top:5px;">
+		<div id="{$controller_id}-box" class="{if $params['multi']}can-multi-file{/if}{if $params['action_name']=='image'} is-image-file{/if}" style="width:100%;clear:both;overflow:hidden;padding-top:7px;overflow: hidden;">
+			<div class="uploadify-queue-btns" id="{$controller_id}-btn" title="选择{if $params['action_name']=='image'}图片{else}文件{/if}"><input id="{$controller_id}" name="{$controller_id}" type="file" /><input type="hidden" name="ext" value="{$ext}"/></div>
+		</div>
+	</div>
+{else}
+	{if isset($first_time)}
+		<link rel="stylesheet" type="text/css" href="/static/js/Jquery/upload/images/upload.css"/>
+		<script type="text/javascript">
+		function uploadify_remove(id){
+			$.warn("您确实要移除该{if $params['action_name']=='image'}图片{else}文件{/if}吗？",function(){
+				var $file_input = $("#uploadify-item-"+id).parent().prev().find("input");
+				var values = $file_input.val().split(",");
+				var newValues = '';
+				if(values){
+					$.each(values, function(i, n){
+						if(n!=id) newValues += (newValues=='' ?  '' : ',') + n;
+					});
+				}
+				$file_input.val(newValues);
+				$("#uploadify-item-"+id).fadeOut(function(){
+					$(this).remove();
+				});
+			});
+		}
+		</script>
+	{/if}
+	<div style="width: 100%;clear:both;">
+		<a title="{$title}" class="uploadify-ui-btn {if isset($params['class'])}{$params['class']}{else}mywin{/if}" rel="{:url('Upload/run',$params)}">{$title}</a>
+		<input type="hidden" name="{$params['name']|default=''}" value="{$params['value']|default=''}" id="uploadify-{$params['id']|default=0}" />
+	</div>
+	<div style="width: 100%;clear:both;padding-top:10px;overflow:hidden;" id="uploadify-container-{$params['id']|default=0}">
+		{if $datas}
+			{foreach $datas as $vo}
+				<span class="uploadify-fileItms" id="uploadify-item-{$vo['id']}">
+					<a href="{$vo['path']}" target="_blank"{if $vo['is_image']} class="lightbox"{if !$vo['pos']} style="display:block;width:100%;height:100%;background:url({$vo['path']}) no-repeat center;" title="{$vo['name']}"{/if}{/if}>
+					{if $vo['is_image']}
+						{if $vo['pos']}<img src="{$vo['path']}" width="{$vo['pos']['width']}" height="{$vo['pos']['height']}" style="top:{$vo['pos']['top']}px;left:{$vo['pos']['left']}px;" alt="{$vo['name']}" title="{$vo['name']}" />{/if}
+					{else}
+						<span class="fileType">{$vo['file_ext']}</span>
+						<span class="fileName">{$vo['name']}</span>
+					{/if}
+					</a>
+					<span onclick="uploadify_remove({$vo['id']})" class="uploadify-cancle" title="移除"></span>
+				</span>
+			{/foreach}
+		{/if}
+	</div>
+{/if}

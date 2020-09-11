@@ -1,0 +1,103 @@
+/*后台样式修改*/
+.must{background: url("../images/must.gif") no-repeat scroll 220px center;}
+.error{background-color: #ffcece;background-image: url("../images/error.gif");}
+.success{background-color: #d5ffce;background-image: url("../images/success.gif");}
+.warn{background-color: #fffbcc;background-image: url("../images/warn.gif");}
+.info{background-image: url(../images/info.gif);background-color: #DBE3FF;}
+.hide{display:none;}
+.DESC {color: #999999;padding-left: 10px;}
+.error, .success, .info, .warn {background-position: 5px center;background-repeat: no-repeat;color: #515151;display: inline-block;margin-left: 10px;margin-top: 1px;padding-left: 27px;padding-right: 8px;position: absolute;}
+.ui-btn, .mini-btn {cursor: pointer;display: inline-block;font-size: 34px;padding: 15px 60px;margin-right: 3px;text-align: center;vertical-align: top;word-spacing: 5px;}
+.ui-btn-green, .mini-btn-green, .act-btn, .status-btn {background: #428bca none repeat scroll 0 0;border: 1px solid #428bca;color: #ffffff;}
+.ui-btn-green:hover, .mini-btn-green:hover, .act-btn:hover {background-color: #135ea5;border: 1px solid #135ea5;}
+/*弹出框CSS START*/
+.Alert_Background, .Alert_Content{
+	width:100%;
+	height: 100%;
+	top:0;
+	left:0;
+	position:fixed;
+}
+
+.Alert_Background{
+	z-index:2000000;
+	background:#000;
+	filter:alpha(opacity=80);
+	-moz-opacity:0.8;
+	opacity:0.8;
+	-webkit-opacity:0.8;
+}
+
+.Alert_Content{
+	z-index:2000001;
+}
+
+.Alert_Content .In_Content{
+	padding-bottom:15px;
+	width:90%;
+    left:5%;
+	border:1px solid #CCC;
+	background:#F2F2F2;
+	position:absolute;
+	top:20%;
+	-webkit-box-shadow:0px 0px 9px 1px #616161;
+	-moz-box-shadow:0px 0px 9px 1px #616161;
+	box-shadow:0px 0px 9px 1px #616161;
+	-o-box-shadow:0px 0px 9px 1px #616161;
+	-ms-box-shadow:0px 0px 9px 1px #616161;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	-o-border-radius: 3px;
+	-ms-border-radius: 3px;
+}
+
+.Alert_Content .header{
+    padding:20px 10px;
+	color:#FFFFFF;
+	font-size:35px;
+	font-weight: bold;
+	background-color: #004f9d;
+}
+
+.Alert_Content .header i{
+	font-size:24px;
+	margin-right:10px;
+	margin-top:2px;
+	top: 4px;
+}
+
+.Alert_Content .container_alert #Alert_Containter{
+	font-size:34px;
+	font-weight: bold;
+	
+}
+
+#Alert_Containter p{
+	background: url(../images/n.gif) no-repeat left center;
+	padding:1px 0px 4px 15px;
+}
+
+.color_0{color:#FF0000;}
+.color_1{color:#037C11;}
+.color_2{color:#EC9110;}
+
+.Alert_Content .container_alert{
+	padding:15px 25px;
+}
+
+.Alert_Content .footer_alert{
+	padding-top:15px;
+	border-top:1px solid #CCCCCC;
+	margin-top:15px;
+}
+
+.Alert_Content a{color:#000;}
+/*弹出框CSS END*/
+
+/*ajax上传图片的样式*/
+.btn-upload{height: 62px;margin-bottom: 10px;position: relative;font-size: 34px;}
+.btn-upload input {cursor: pointer;height: 62px;left: 0;opacity: 0;position: absolute;top: 0;z-index: 1;font-size: 34px;}
+.uploadify-ui-btn{height: 62px;font-size: 30px;line-height: 52px;}
+.uploadify-fileItms{text-align:left;}
+.del-item{background: url("../images/cancel.png") no-repeat scroll 0 0;display: block;font-size: 0;height: 23px;position: absolute;right: -10px;top: -10px;width: 23px;cursor: pointer;z-index: 1;}

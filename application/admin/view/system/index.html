@@ -1,0 +1,71 @@
+{include file="public/header" /}
+<form method="post" class="toAjaxForm">
+	<div class="onecolumn">
+		<div class='header'>
+			<h3>{$title}</h3>
+		</div>
+		<div class='content'>
+			{php}
+				$count = count($list);
+				if($count>10){
+					$class='subminBar';
+				}else{
+					$class='edit-item';
+				}
+			{/php}
+			{volist name="list" id="rs"}
+				{php}$name = $key;{/php}
+				<div class="edit-item">
+					<div class="lefter">{$rs['title']}</div>
+					<div class="righter">
+						{switch rs['type']}
+							{case text}
+								<input class="long-txt" type="text" name="config[{$name}]" {if isset($rs['upload'])}{eq name="rs.upload" value="true"}id="UploadID-{$name}"{/eq}{/if} value="{$data[$name]|default=''}" class="text" /><span> {$rs['desc']|default=''}</span>
+								{if isset($rs['upload'])}{eq name="rs.upload" value="true"}<a href="{$data[$name]}" target="_blank" class="jpg">查看图片</a>{/eq}{/if}
+							{/case}
+							{case time}
+								<input type="text" class="short-txt" name="config[{$name}]" value="{$data[$name]|default=$rs['default']}" class="time" onclick="WdatePicker({literal}{dateFmt:'yyyy-MM-dd HH:mm:ss'}{/literal});" /><span> {$rs['desc']|default=''}</span>
+							{/case}
+							{case password}
+								<input type="password" class="long-txt" name="config[{$name}]" value="{$data[$name]|default=$rs['default']}" class="text" /><span> {$rs['desc']|default=''}</span>
+							{/case}
+							{case radio}
+								{volist name="rs['value']" id="title"}
+									{php}$raname = $key;{/php}
+									<input type="radio" name="config[{$name}]" value="{$raname}" id="{$name}_{$i}" {if empty($data[$name])}{if $rs['default']==$raname}checked{/if}{else}{if $data[$name]==$raname}checked{/if}{/if} /><label for="{$name}_{$i}">{$title}</label>
+								{/volist}
+								<span> {$rs['desc']|default=''}</span>
+							{/case}
+							{case textarea}
+								{php}$data[$name] = filter_decode($data[$name]);{/php}
+								<textarea rows="3" cols="10" name="config[{$name}]" class="long-txt">{$data[$name]|default=''}</textarea><span> {$rs['desc']|default=''}</span>
+							{/case}
+							{case select}
+								<select name="config[{$name}]">
+									{volist name="rs['value']" id="title"}
+										{php}$raname = $key;{/php}
+										<option value="{$raname}" {if empty($data[$name])}{if $rs['default']==$raname}selected{/if}{else}{if $data[$name]==$raname}selected{/if}{/if}>{$title}</option>
+									{/volist}
+								</select>
+								<span> {$rs['desc']|default=''}</span>
+							{/case}
+							{case upload}
+								{:Upload('Upload/image', array('id'=>'image', 'name'=>'config['.$name.']', 'value'=>$data[$name], 'path'=>'Logo', 'multi'=>false))}
+								<span> {$rs['desc']|default=''}</span>
+							{/case}
+							{default /}
+								<input type="text" name="config[{$name}]" value="{$data[$name]|default=''}" class="text" /><span> {$rs['desc']|default=''}</span>
+						{/switch}
+					</div>
+				</div>
+			{/volist}
+			<div class="edit-item">
+				<div class="righter">
+					<span class="ui-btn ui-btn-green submit">提 交</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</form>
+{include file="public/footer" /}

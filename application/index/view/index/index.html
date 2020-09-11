@@ -1,0 +1,66 @@
+{include file="public/header" /}
+<style type="text/css">
+  *{
+   margin: 0;
+   padding: 0;
+  }
+  body{
+   width: 100vw;
+   height: 100vh;
+   background: radial-gradient(at center,
+    #3498db,#2980b9);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+  }
+  div.search{
+   height: 40px;
+   width: 500px;  
+  }
+  div.search form{
+   width: 100%;
+   height: 100%;
+  }
+  div.search form input:nth-child(2){
+   width: 70%;
+   height: 100%;
+   font-size: 16px;
+   text-indent: 40px;
+   border: none;
+   float: left;
+  }
+  div.search form input:nth-child(3){
+   width: 30%;
+   height: 100%;
+   font-size: 16px;
+   letter-spacing: 5px;
+   border: none;
+  }
+  div.search form img{
+   position: absolute;
+   left: 50vw;
+   transform: translateX(-250px);
+   margin-top: 10px;
+   margin-left: 10px;
+   height: 20px;
+  }
+</style>
+    
+    <div class="search">
+        <form action="{:url('Index/index')}" method="get">
+            <img src="/static/index/images/search_ico.png" alt="">
+            <input type="text" name="name" value="{$name}" placeholder="请输入搜索名称">
+            <input type="submit" value="搜索">
+        </form> 
+
+        {if !empty($name)}
+            <div style="padding-top: 20px;text-align:center">
+                搜索结果<br>
+                名称：{$data['name']}<br>
+                类型：{$data['type']}<br>
+                价格：{$data['price']}<br>
+            </div>
+        {/if}
+    </div>
+
+{include file="public/footer" /}

@@ -1,0 +1,31 @@
+{include file="public/header" /}
+	<div class="onecolumn">
+		<div class="header">
+			<h3>修改密码</h3>
+			<span class="ie7-hide"></span>
+		</div>
+
+		<div class="content">
+			<form method="post" id="cate" action="{:url('Admin/'.request()->action(), array('id'=>input('param.id')))}" class="toAjaxForm">
+                    <div class="edit-item">
+                        <label for="admin_password" class="lefter">密 码：</label>
+						<!-- require min_6 max_20 eq_admin_password -->
+                        <div class="righter must"><input type="password" class="long-txt " name="admin_password" id="admin_password"><span class="DESC">由6～20个字符组成</span></div>
+                    </div>
+
+                    <div class="edit-item">
+                        <label for="admin_confirm" class="lefter">确认密码：</label>
+						<!-- require min_6 max_20 eq_admin_confirm -->
+                        <div class="righter must"><input type="password" class="long-txt " name="admin_confirm" id="admin_confirm"><span class="DESC">请再一次输入密码</span></div>
+                    </div>
+
+				<div class="edit-item">
+					<div class="righter">
+						<span class="ui-btn ui-btn-green submit">提 交</span>
+						<a href="javascript:void(0)" class="ui-btn cancel-btn">取 消</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+{include file="public/footer" /}

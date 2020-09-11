@@ -1,0 +1,51 @@
+<table id="base_msg">
+	<tr>
+		<th colspan="2">管理员信息</th>
+	</tr>
+    <tr>
+        <td width="50%">
+            <span class="table-desc w90">用户名：</span>{$data['admin_username']|default='-'}
+        </td>
+        <td>
+            <span class="table-desc w90">角色组：</span>{$data['group_name']|default='-'}
+        </td>
+    </tr>
+	<tr>
+		<td width="50%">
+            <span class="table-desc w90">昵称：</span>{$data['admin_nickname']|default='-'}
+		</td>
+		<td>
+            <span class="table-desc w90">姓名：</span>{$data['admin_surename']|default='-'}
+		</td>
+	</tr>
+    <tr>
+        <td width="50%">
+            <span class="table-desc w90">性别：</span>{if $data['admin_sex']==1}男{else}女{/if}
+        </td>
+        <td>
+            <span class="table-desc w90">头像：</span>
+            {if $data['admin_image']}
+                <a href="{$data['root_path']}" target="_blank" class="lightbox">
+                    <img src="{$data['root_path']}" style="margin-right: 20px;width: 100px;height: 100px;"/>
+                </a>
+            {/if}
+        </td>
+    </tr>
+	<tr>
+		<td width="50%">
+            <span class="table-desc w90">QQ：</span>{$data['admin_qq']|default='-'}
+		</td>
+		<td>
+            <span class="table-desc w90">E-mail：</span>{$data['admin_email']|default='-'}
+		</td>
+	</tr>
+	
+	<tr>
+		<td width="50%">
+            <span class="table-desc w90">手机号：</span>{$data['admin_mobile']|default='-'}
+		</td>
+		<td>
+            <span class="table-desc w90">状态：</span>{$admin_status_list[$data['admin_status']]}
+		</td>
+	</tr>
+</table>

@@ -1,0 +1,72 @@
+{include file="public/header" /}
+	<div class="onecolumn">
+		<div class="header">
+			<h3>登录日志</h3>
+		</div>
+		<div class="search-bar">
+			<form id="search_form" method="GET">	
+				<span class="inner-txt" style="margin-left: 20px;">
+					<input type="text" class="long-txt " style="width: 100px" name="start_time" id="start_time" placeholder="开始时间" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="{$start_time}">
+				</span>
+	        	<span class="inner-txt" style="margin-right: 20px">
+					<input type="text" class="long-txt " style="width: 100px" name="end_time" id="end_time" placeholder="结束时间" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="{$end_time}">
+				</span>		
+				<span class="inner-txt">
+					<input class="prompt w150" type="text" title="用户名" value="{:input('get.keyword')}" name="keyword" placeholder="用户名">
+				</span>
+				<span class="inner-txt">
+					<input class="prompt w150" type="text" title="归属地" value="{:input('get.address')}" name="address" placeholder="归属地">
+				</span>
+				<a class="search-btn submit" title="搜索"><span>搜索</span></a>
+			</form>
+		</div>
+				
+		<div class="content">
+			<form method="post" action="{:url(request()->controller().'/'.request()->action())}" id="betch-form">
+				<table>
+					<tr class="head">
+						{if controller('Acl')->hasAcl(request()->controller(),'login_delete')}
+							<th class="list-check"><input onclick="$.checkbox(this,'.item')" type="checkbox"></th>
+						{/if}
+						<th class="list-title">id</th>
+						<th class="list-title">用户名</th>
+						<th class="list-time">IP地址</th>
+						<th class="list-title">归属地</th>
+						<th class="list-title">{:get_order("登录时间","a.login_addtime",$order_type,$order_field)}</th>
+					</tr>
+					{if isset($datas)}
+					{foreach $datas as $vo}
+						<tr class="item">
+							{if controller('Acl')->hasAcl(request()->controller(),'login_delete')}
+								<td><input type="checkbox" name="items[]" value="{$vo['id']}"></td>
+							{/if}
+							<td>{$vo['id']}</td>
+							<td class="list-title">
+								{if controller('Acl')->hasAcl('Admin','edit')}
+									{:controller('Acl')->a($vo['username'],'edit','Admin','id='.$vo['uid'],'class="view-btn"')}
+								{else}								
+									{$vo['username']}
+								{/if}
+							</td>		
+							<td>{$vo['login_ip']}</td>
+							<td>{$vo['login_address']}</td>
+							<td>{:date('Y-m-d H:i:s',$vo['login_addtime'])}</td>
+						</tr>
+					{/foreach}
+					{/if}
+				</table>
+			</form>
+
+			{if isset($datas)}
+				<div class="action-bar">
+					{if controller('Acl')->hasAcl(request()->controller(),'login_log_delete')}
+						<a class="ui-btn ui-btn-green betch-delete-btn" name="#betch-form" rel="{:url(request()->controller().'/login_log_delete')}" title="删除选中">删除选中</a>
+					{/if}
+					{include file="public/pager" /}
+				</div>
+			{else}
+				<div class="empty-data"><span>{:config('logic.NOFOUND_RECORDS')}</span></div>
+			{/if}
+		</div>
+	</div>	
+{include file="public/footer" /}

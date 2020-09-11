@@ -1,0 +1,111 @@
+{include file="public/header" /}
+<div class="onecolumn">
+	<div class="header">
+		{php}$btn=controller('Acl')->addLink('添加管理员','add');{/php}
+		{if $btn}
+	        <div class="float-left">
+	            {$btn|raw}
+	        </div>
+        {else}
+        	<h3>管理员列表</h3>
+        {/if}
+		<span class="ie7-hide"></span>
+	</div>
+
+	<div class="search-bar">
+		<form name='form_1' method="get">
+			{if $admin['group_id'] == 1}
+				<select name="group_id">
+					<option value="">用户组</option>
+					{if isset($roles)}
+						{foreach $roles as $vo}
+							<option value="{$vo['id']}"{if input('get.group_id')==$vo['id']} selected{/if}>{$vo['group_name']}</option>
+						{/foreach}
+					{/if}
+				</select>
+			{/if}
+			<span class="inner-txt">
+				<input type="text" name="keywords" class="prompt w200" value="{:input('get.keywords')}" title="请输入用户名或真实姓名" placeholder="请输入用户名或真实姓名"/>
+			</span>
+			<a class="search-btn submit" title="搜索"><span>搜索</span></a>
+		</form>
+	</div>
+
+	<div class="content">
+		<form id="betch-form" method="post" action="{:url(request()->controller().'/order')}">
+			<table>
+				<tr class="head">
+					<!-- {if controller('Acl')->hasAcl(request()->controller(),'delete')}
+						<th class="list-check"><input onclick="$.checkbox(this,'.item')" type="checkbox"></th>
+					{/if} -->
+					<!-- {if controller('Acl')->hasAcl(request()->controller(),'order')}
+						<th class="list-order">{:get_order("序号","a.id",$order_type,$order_field)}</th>
+					{/if} -->
+					<th width=150>用户名</th>
+					<th width=150>昵称</th>
+					<th width=150>姓名</th>
+					<th width=150>性别</th>
+					<th class="list-time">{:get_order("用户组","a.group_id",$order_type,$order_field)}</th>
+					<th width=150>QQ</th>
+					<th width=150>手机号</th>
+					<th width=80>状态</th>
+					<th width=150>操作</th>
+				</tr>
+
+				{if isset($datas)}
+					{foreach $datas as $vo}
+						<tr class="item">
+							<!-- {if controller('Acl')->hasAcl(request()->controller(),'delete')}
+								<td><input type="checkbox" name="items[]" value="{$vo['id']}"></td>
+							{/if} -->
+							<!-- {if controller('Acl')->hasAcl(request()->controller(),'order')}
+								<td style='text-align: left'><input type='text' class="short-txt" value="{if $vo['id']==9999}{else}{$vo['id']}{/if}" name="id[{$vo['id']}]"/></td>
+							{/if} -->
+							<td>
+								{if controller('Acl')->hasAcl(request()->controller(),'view')}
+									{:controller('Acl')->a($vo['admin_username'],'view','Admin','id='.$vo['id'],'class="view-btn window-box"')}
+								{else}
+									{$vo['admin_username']}
+								{/if}
+							</td>
+							<td>{$vo['admin_nickname']|default='-'}</td>
+							<td>{$vo['admin_surename']|default='-'}</td>
+							<td>{if $vo['admin_sex']==1}男{else}女{/if}</td>
+							<td>{$vo['group_name']}</td>
+							<td>{$vo['admin_qq']|default='-'}</td>
+							<td>{if $vo['admin_mobile']}{$vo['admin_mobile']}{else}-{/if}</td>
+							<td>
+								{if $vo['admin_status']==1}
+									{:controller('Acl')->a('启用','admin_status',request()->controller(),'id='.$vo['id'].'&s=2','class="ajax-btn green-font" rel="2"')}
+								{else}
+									{:controller('Acl')->a('禁用','admin_status',request()->controller(),'id='.$vo['id'].'&s=1','class="ajax-btn red-font" rel="1"')}
+								{/if}
+							</td>
+							<td class="act-td">
+	                            {:controller('Acl')->a('修改','edit',request()->controller(),'id='.$vo['id'],'class="act-btn"')}
+								{:controller('Acl')->a('修改密码','edit_pwd',request()->controller(),'id='.$vo['id'],'class="act-btn"')}
+								{:controller('Acl')->a('删除','delete',request()->controller(),'id='.$vo['id'],'class="act-btn delete-btn"')}
+	                        </td>
+						</tr>
+					{/foreach}
+				{/if}
+			</table>
+		</form>
+		{if isset($datas)}
+			<div class="action-bar">
+				<div class="float-left">
+					<!-- {if controller('Acl')->hasAcl(request()->controller(),'delete')}
+						<a class="ui-btn ui-btn-green betch-delete-btn" name="#betch-form" rel="{:url(request()->controller().'/delete')}" title="删除选中">删除选中</a>
+					{/if} -->
+					<!-- {if controller('Acl')->hasAcl(request()->controller(),'order')}
+						<a class="ui-btn order-btn" name="#betch-form" title="排序">排序</a>
+					{/if} -->
+				</div>
+				{include file="public/pager" /}
+			</div>
+		{else}
+			<div class="empty-data"><span>{:config('logic.NOFOUND_RECORDS')}</span></div>
+		{/if}
+	</div>
+</div>
+{include file="public/footer" /}

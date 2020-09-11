@@ -1,0 +1,79 @@
+{include file="public/header" /}
+<table width="100%">
+    <tr>
+        <td valign="top">
+            <div class="onecolumn">
+                <div class="header"><h3>系统信息</h3></div>
+                
+                <div class="content info-table">
+                    <table>
+                        <tr class="item">
+                            <td class="list-time"><b>当前站点：</b></td>
+                            <td colspan="3">{$_SERVER['HTTP_HOST']}</td>
+                        </tr>
+                        <tr class="item">
+                            <td class="list-time"><b>系统名称：</b></td>
+                            <td colspan="3">云骑士</td>
+                        </tr>
+                        <tr class="item">
+                            <td><b>当前用户：</b></td>
+                            <td class="list-title">{$admin['admin_surename']}</td>
+                            <td class="list-time"><b>上次登录时间：</b></td>
+                            <td class="list-title">{$admin['admin_login_time']|date='Y-m-d H:i:s'}</td>
+                        </tr>
+                        <tr class="item">
+                            <td><b>上次所在IP：</b></td>
+                            <td>{$admin['admin_login_ip']}</td>
+                            <td class="list-time"><b>当前所在IP：</b></td>
+                            <td>{:get_client_ip()}</td>
+                        </tr>
+                        <tr class="item">
+                            <td class="list-time"><b>系统版本：</b></td>
+                            <td>{:config('logic.VERSION')}</td>
+                            <td class="list-time"><b>PHP 版本：</b></td>
+                            <td>{:PHP_VERSION}</td>
+                        </tr>
+                        <tr class="item">
+                            <td class="list-time"><b>服务器软件：</b></td>
+                            <td>{$_SERVER['SERVER_SOFTWARE']}</td>
+                            <td></td>
+                            <td></td>
+                            <!-- <td class="list-time"><b>MYSQL 版本：</b></td>
+                            <td>{--:mysqli_get_server_info(mysqli_connect())}</td> -->
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {if isset($logs)}
+    <tr>
+        <td colspan="2" valign="top">
+            <div class="onecolumn">
+                <div class="header"><h3>最新操作记录</h3><a href="{:url('Log/my')}" class="float-right" style="margin-right:15px;">查看更多</a></div>
+                
+                <div class="content">
+                    <table>
+                        <tr class="head">
+                            <th class="list-title">操作</th>
+                            <th class="list-order">操作者</th>
+                            <th class="list-time">IP</th>
+                            <th class="list-time">操作时间</th>
+                        </tr>
+                        {foreach $logs as $vo}
+                            <tr class="item">
+                                <td class="list-title">{$vo['content']}</td>
+                                <td>{$vo['name']}</td>
+                                <td>{$vo['ip']}</td>
+                                <td>{:date('Y-m-d H:i:s', $vo['time'])}</td>
+                            </tr>
+                        {/foreach}
+                    </table>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {/if}
+</table>
+
+{include file="public/footer" /}

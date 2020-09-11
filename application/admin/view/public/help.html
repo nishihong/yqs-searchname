@@ -1,0 +1,54 @@
+<style>
+#HELP_TOOLBAR_BG{z-index:2;background: #000;height:100px;}
+#HELP_TOOLBAR,#HELP_TOOLBAR_BG{position:absolute;bottom: 0;left:0;width:100%;line-height:100px;}
+#HELP_TOOLBAR{z-index:3;text-align:center;color:#fff;padding-top:25px;height:75px;}
+#HELP_TOOLBAR .ui-btn{font-size:18px;height:45px;line-height:45px;font-weight:bold;}
+#content_wrapper{padding-bottom:105px;}
+</style>
+<div id="HELP_TOOLBAR_BG"></div>
+<div id="HELP_TOOLBAR">
+	{if isset($stepinfo[$the_step-1])}<a class="ui-btn" lang="{$the_step-1}" rel="{url($stepinfo[$the_step-1]['a'], $stepinfo[$the_step-1]['m'])}" title="{$stepinfo[$the_step-1]['title']}">上一步</a>{/if}
+	{if isset($stepinfo[$the_step+1])}
+	<a class="ui-btn ui-btn-green{if $stepinfo[$the_step]['require']} require{/if}" name="{H($stepinfo[$the_step]['title'])}" lang="{$the_step+1}" rel="{url($stepinfo[$the_step+1]['a'], $stepinfo[$the_step+1]['m'])}" title="{$stepinfo[$the_step+1]['title']}">下一步</a>
+	{else}
+	<a class="ui-btn ui-btn-green" lang="0">完 成</a>
+	{/if}
+	{if $stepinfo[$the_step]['require']}<input type="hidden" id="step_tablename" value="{$stepinfo[$the_step]['table']}">{/if}
+</div>
+<script type="text/javascript">
+$(function(){
+	$("#HELP_TOOLBAR_BG").css("opacity", "0.3");
+	$("#HELP_TOOLBAR a").click(function(){
+		var param_str = "";
+		if($(this).hasClass("require")){
+			param_str = "&require=true&tablename=" + $("#step_tablename").val() + "&desc=" + $(this).attr("name");
+		}
+		var theurl = this.rel;
+		var step = $(this).attr("lang");
+		$.loading();
+		$.ajax({
+			url : "{:url('Passport/step', 'company_id='.$theCompany['id'])}",
+			data : "step=" + step + param_str,
+			dataType : "json",
+			type : "POST",
+			success : function(json){
+				$.remove_loading();
+				if(json && json.code == $.CODE_SUCCESS){
+					if(step == 0){
+						$.success("引导设置完毕！", "{:url('Index/index')}");
+					}else{
+						document.location.href = theurl;
+					}
+				}else{
+					$.error(json ? json.data : "系统出错，引导操作失败");
+				}
+			},
+			error : function(){
+				$.error("系统出错，引导操作失败");
+				$.remove_loading();
+			}
+		});
+		return false;
+	});
+});
+</script>

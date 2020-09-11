@@ -1,0 +1,51 @@
+{include file="public/header" /}
+	<div class="onecolumn">
+		<div class="header">
+			{php}$btn=controller('Acl')->addLink('添加角色组','add');{/php}
+			{if $btn}
+				<div class="float-left">
+					{$btn|raw}
+				</div>
+			{else}
+				<h3>角色组列表</h3>
+			{/if}
+			<span class="ie7-hide"></span>
+		</div>
+		
+		<div class="content">
+			<table>
+				<tr class="head">
+					<th class="list-id">ID</th>
+					<th class="list-title">角色名称</th>
+					<th class="list-title">角色类型</th>
+					<th class="list-title">操作</th>
+				</tr>
+
+				{if isset($datas)}
+					{foreach $datas as $vo}
+						<tr class="item">
+							<td>{$vo['id']}</td>
+							<td class="list-title">{$vo['group_name']}</td>
+							<td class="list-title">{if $vo['group_type']==2}超级管理员{else}管理员{/if}</td>
+							<td class="act-td">
+								{if $vo['group_type']==2}
+									-
+								{else}
+									{:controller('Acl')->a('授权管理','edit',request()->controller(),'id='.$vo['id'],'class="act-btn"')}
+									<!-- {:controller('Acl')->a('设置字段','set',request()->controller(),'id='.$vo['id'],'class="act-btn"')} -->
+									{:controller('Acl')->a('删除','delete',request()->controller(),'id='.$vo['id'],'class="act-btn delete-btn"')}
+								{/if}
+							</td>
+						</tr>
+					{/foreach}
+				{/if}
+			</table>
+
+			{if isset($datas)}
+				<div class="action-bar">{include file="public/pager" /}</div>
+			{else}
+				<div class="empty-data"><span>{:config('logic.NOFOUND_RECORDS')}</span></div>
+			{/if}
+		</div>
+	</div>
+{include file="public/footer" /}

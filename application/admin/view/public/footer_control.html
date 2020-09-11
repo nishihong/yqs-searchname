@@ -1,0 +1,199 @@
+                    </div>
+                <div style='clear: both;'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<div id="footer" {if empty($childMenu)}class="footer-bottom"{else} class="footer-left" style="bottom: 0px; position: absolute; width: 210px; z-index: 100"{/if}>
+    <div class="wrap"><a href="javascript:void(0)">科技有限公司</a></div>
+</div>
+<style>
+/* 定义keyframe动画，命名为blink */
+
+@keyframes blink{
+  0%{opacity: 1;}
+  50%{opacity: 1;}
+  50.01%{opacity: 0;} /* 注意这里定义50.01%立刻透明度为０，可以设置闪烁效果 */
+  100%{opacity: 0;}
+}
+
+/* 添加兼容性前缀 */
+
+@-webkit-keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 1; }
+    50.01% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@-moz-keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 1; }
+    50.01% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@-ms-keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 1; }
+    50.01% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@-o-keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 1; }
+    50.01% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* 定义blink类*/
+.blink{
+    animation: blink .75s linear infinite;
+    /* 其它浏览器兼容性前缀 */
+    -webkit-animation: blink .75s linear infinite;
+    -moz-animation: blink .75s linear infinite;
+    -ms-animation: blink .75s linear infinite;
+    -o-animation: blink .75s linear infinite;
+    color: #fff;
+    font-weight: bold;
+}
+
+
+
+
+</style>
+{load href="/static/js/Jquery/lightbox/jquery.lightbox-0.5.min.js"}
+{load href="/static/js/Jquery/lightbox/images/jquery.lightbox-0.5.css"}
+<script type="text/javascript">
+$(function(){
+    lightboxShow(".lightbox");
+
+    $(".search-btn").keydown(function(e){
+        e = e || window.event;
+        if(e.keyCode == 13) {
+            //console.info(this);
+            $('form')[0].submit();
+        }
+    });
+
+    $('.export').click(function(){
+        var query = $("form[name='form_1']").serialize();
+        var type = $("form[name='form_1']").attr('export-type');
+        $.ajax({
+            url :"{U('Downloads/export')}",
+            type:"get",
+            data:query+"&type="+type+"&down_column="+down_column+"&down_name="+down_name,
+            success: function(p_msg){
+                $.warn(p_msg.info);
+                //$.get("{:url('Downloads/add')}",function(data){});
+            }
+        });
+    });
+
+});
+
+function lightboxShow(tag){
+    $(tag).lightBox({
+        imageLoading :  '/static/js/Jquery/lightbox/images/lightbox-ico-loading.gif',
+        imageBtnPrev:   '/static/js/Jquery/lightbox/images/lightbox-btn-prev.gif',
+        imageBtnNext:   '/static/js/Jquery/lightbox/images/lightbox-btn-next.gif',
+        imageBtnClose:  '/static/js/Jquery/lightbox/images/lightbox-btn-close.gif',
+        imageBlank:     '/static/js/Jquery/lightbox/images/lightbox-blank.gif',
+        fixedNavigation : true
+    });
+}
+
+{if !empty($theCompany['help_step'])}{include file="public/help" /}{/if}
+
+$('.o_day').click(function(){
+    var day     = $(this).attr('data-time');
+    var time    = Date.parse(new Date());
+    var fmt     = $(this).attr('data-fmt');
+    if(day == 0){
+
+        time = time-(86400*day*1000);
+        var newDate = new Date(time);
+        var time1 = formatDate(newDate,1);
+        var time2 = formatDate(newDate,1);
+
+    }else if(day == 1){
+        time = time-(86400*day*1000);
+        var newDate = new Date(time);
+        var time1 = formatDate(newDate,1);
+        var time2 = formatDate(newDate,1);
+    }else if(day == 30){
+        var newDate = new Date(time);
+        var time1 = formatDate(newDate,2);
+        var time2 = formatDate(newDate,1);
+    }else if(day == -7){
+        var time1 = getLastWeekStartDate();
+        var time2 = getLastWeekEndDate();
+    }else if(day == -30){
+        var time1 = getLastMonthStartDate();
+        var time2 = getLastMonthEndDate();
+    }
+    if(fmt=='hi'){
+        time1 = time1 + '00:00';
+        time2 = time2 + '23:59';
+    }
+    $("#start_starttime").val(time1);
+    $("#start_endtime").val(time2);
+
+    $("#start_starttime").siblings('.prompt-desc').hide();
+    $("#start_endtime").siblings('.prompt-desc').hide();
+
+});
+
+//获得上周的开始日期
+    function getLastWeekStartDate() {
+        var date = new Date();
+        var weekStartDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() - 7);
+        return formatDate(weekStartDate,1);
+    }
+//获得上周的结束日期
+    function getLastWeekEndDate() {
+        var date = new Date();
+        var weekEndDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() - 1);
+        return formatDate(weekEndDate,1);
+    }
+//获得上月开始时间
+    function getLastMonthStartDate() {
+        var date = new Date();
+        date.setMonth(date.getMonth()-1);
+        var lastMonthStartDate = new Date(date.getFullYear(), date.getMonth(), 1);
+        return formatDate(lastMonthStartDate,1);
+    }
+//获得上月结束时间
+    function getLastMonthEndDate() {
+        var date = new Date();
+        var lastMonthEndDate = Date.parse(new Date(date.getFullYear(), date.getMonth(), 1))-86400*1000;
+        return formatDate(new Date(lastMonthEndDate),1);
+    }
+// 显示时间
+function formatDate(now,type){
+    Y = now.getFullYear() + '-';
+    M = (now.getMonth()+1 < 10 ? '0'+(now.getMonth()+1) : now.getMonth()+1) + '-';
+    D = (now.getDate() <10 ? ('0'+ now.getDate()) : now.getDate()) + ' ';
+    h = now.getHours() + ':';
+    m = now.getMinutes();
+    s = now.getSeconds();
+    if(type == 1){
+        return  Y+M+D;
+    }else if(type == 2){
+        return  Y+M+'01 ';
+    }
+}
+
+    var down_column = $('.nv').find('.current').find('a').text();
+    down_column += "-" + $('#shortcut').find('.current').text();
+    down_column += "-" + $('#shortcut').find('.li-focus').find('a').text();
+    down_column += "查询"
+    var down_name = $('#shortcut').find('.li-focus').find('a').text() + "-导出数据";
+</script>
+
+</body>
+</html>
