@@ -28,17 +28,17 @@ class Index extends Common
     {
         //名称
         $name = input('param.name');
-        $data = [];
+        $datas = [];
 
         if ($name) {
             $nameSearchModel = new NameSearch();
-            $data = $nameSearchModel->where([
+            $datas = $nameSearchModel->where([
                                 ['name', '=', $name]
-                            ])->find();
+                            ])->select();
         }
 
         return view('index', [
-            'data' => $data,
+            'datas' => $datas,
             'name' => $name,
         ]);
     }

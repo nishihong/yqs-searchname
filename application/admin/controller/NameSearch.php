@@ -76,23 +76,24 @@ class NameSearch extends Common
 	        //     $this->error('提交数目一次不能大于200条');
 	        // }
 
+	        $adds = [];
 	        foreach ($content as $key => $vo) {
 	        	$list = explode('|', $vo);
+	        	// dump($list);exit;	
 	        	$data = [
 	        		'name' => $list[0],
 	        		'type' => $list[1],
                     'price' => $list[2],
 	        	]; 
 
-	        	// 先判断库里是否有该名称 有的话过滤
-	        	$info = model('NameSearch')->where([
-                                ['name', '=', $list[0]]
-                            ])->find();
-
-	        	if (empty($info)) {
-            		model('NameSearch')->insert($data);
-	        	}
+	        	$adds[] = $data;
 	        }
+
+        	try {
+            	model('NameSearch')->insertAll($adds);
+        	} catch (Exception $e) {
+                $this->error("添加失败" . $e->getMessage());
+        	}
 
         	$this->success("添加成功",url(request()->controller().'/index'));
         }

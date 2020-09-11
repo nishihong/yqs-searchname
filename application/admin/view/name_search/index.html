@@ -9,7 +9,7 @@
 		<div class="search-bar">
 			<form method="get" action="{:url(request()->controller() . '/' . request()->action())}">
 				<input type="text" name="name" class="inner-txt w200 prompt" title="输入名称" value="{$name|default=''}">
-				<input type="text" name="type" class="inner-txt w200 prompt" title="输入类型" value="{$type|default=''}">
+				<input type="text" name="type" class="inner-txt w200 prompt" title="输入产品" value="{$type|default=''}">
 
 				<a class="search-btn submit" title="搜索"><span>搜索</span></a>
 			</form>
@@ -24,7 +24,7 @@
 						{/if}
 						<th class="list-order">{:get_order("ID","id",$order_type,$order_field)}</th>
 						<th class="list-title">名称</th>
-						<th class="list-title">类型</th>
+						<th class="list-title">产品</th>
 						<th class="list-title">价格</th>
 						<th class="list-title">&nbsp;</th>
 					</tr>

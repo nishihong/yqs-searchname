@@ -1,4 +1,5 @@
 {include file="public/header" /}
+
 <style type="text/css">
   *{
    margin: 0;
@@ -6,7 +7,7 @@
   }
   body{
    width: 100vw;
-   height: 100vh;
+   height: 40vh;
    background: radial-gradient(at center,
     #3498db,#2980b9);
    display: flex;
@@ -44,6 +45,13 @@
    margin-left: 10px;
    height: 20px;
   }
+  .head th{
+    background: #EBEBEB;
+  }
+  .item td{
+    border: 1px solid #EEEEEE;
+    background: #fff;
+  }
 </style>
     
     <div class="search">
@@ -53,14 +61,23 @@
             <input type="submit" value="搜索">
         </form> 
 
-        {if !empty($name)}
-            <div style="padding-top: 20px;text-align:center">
-                搜索结果<br>
-                名称：{$data['name']}<br>
-                类型：{$data['type']}<br>
-                价格：{$data['price']}<br>
-            </div>
-        {/if}
+        <div style="text-align:center;width:100%;padding-top: 20px;">
+          <table style="width:100%">
+            <tr class="head">
+              <th class="list-title">名称</th>
+              <th class="list-title">产品</th>
+              <th class="list-title">价格</th>
+            </tr>
+
+          {foreach $datas as $key=> $vo}
+            <tr class="item">
+              <td class="list-title">{$vo['name']}</td>
+              <td class="list-title">{$vo['type']}</td>
+              <td class="list-title">{$vo['price']}</td>
+            </tr>
+          {/foreach}
+          </table>
+        </div>
     </div>
 
 {include file="public/footer" /}
